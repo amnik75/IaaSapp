@@ -6,7 +6,7 @@ from django.db import models
 # Create your models here.
 
 class Server(models.Model):
-    name = models.CharField(max_length = 254,blank=True, null=True)
+    name = models.CharField(primary_key=True,max_length = 254)
     ram = models.CharField(max_length = 2,blank=True, null=True)
     cpu = models.CharField(max_length = 2,blank=True, null=True)
     storage = models.CharField(max_length = 5,blank=True, null=True)
