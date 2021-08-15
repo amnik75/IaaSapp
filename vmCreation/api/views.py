@@ -1,4 +1,4 @@
-from vmCreation.models import Server
+from vmCreation.models import *
 from vmCreation.api.serializers import ServerSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,15 +10,22 @@ from subprocess import PIPE
 class Create(APIView):
     def post(self, request, format= None):
         serializer = ServerSerializer(data=request.data)
-        virtips = ['192.168.122.104','192.168.122.119']
+        virtips = []
+        ids = []
+        hosts =  Host.objects.order_by('id')
+        for host in hosts:
+            virtips.append(host.ip)
+            ids.append(host.id)
         if serializer.is_valid():
-            host = randrange(2)
-            ip = virtips[host]
+            r = randrange(2)
+            ip = virtips[r]
+            host = ids[r]
             serializer.save()
             result = subprocess.run(['ssh',ip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage']],stdout=PIPE, stderr=PIPE)
             s = Server.objects.filter(name = request.data['name']).first()
-            s.host = host + 1
+            h = Host.objects.filter(id = host).first()
             s.status = "Active"
+            s.host = h
             s.save()
             return Response(result.stdout.decode(), status=status.HTTP_200_OK)
         elif isRepeating(request.data) :

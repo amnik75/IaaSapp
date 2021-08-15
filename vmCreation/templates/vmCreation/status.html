@@ -45,7 +45,12 @@ th, td {
     <td>{{ server.cpu }}</td>
     <td>{{ server.storage }}</td>
     <td>{{ server.status }}</td>
-    <td>{{ server.host }}</td>
+    <td>{% if None == server.host.id %}
+    	Not defined
+	{% else %}
+	{{ server.host.id }}
+	{% endif %}
+    </td>
     {% endfor %}
   </tr>
 </table>
