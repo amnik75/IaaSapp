@@ -12,9 +12,14 @@ class Create(APIView):
         serializer = ServerSerializer(data=request.data)
         virtips = ['192.168.122.104','192.168.122.119']
         if serializer.is_valid():
-            ip = virtips[randrange(2)]
-            result = subprocess.run(['ssh',ip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage']],stdout=PIPE, stderr=PIPE)
+            host = randrange(2)
+            ip = virtips[host]
             serializer.save()
+            result = subprocess.run(['ssh',ip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage']],stdout=PIPE, stderr=PIPE)
+            s = Server.objects.filter(name = request.data['name']).first()
+            s.host = host + 1
+            s.status = "Active"
+            s.save()
             return Response(result.stdout.decode(), status=status.HTTP_200_OK)
         elif isRepeating(request.data) :
             return Response("The name is used by an other customer", status=status.HTTP_200_OK)
