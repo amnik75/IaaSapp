@@ -1,0 +1,15 @@
+#cloud-config
+
+users:
+  - name: amir
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDwUdEoUNDHqEerg/mYZ5qAnvJACMEe4G4F+Ms7CAxePcDm4dUMO+9jyC8BURckrzjdfpQ6hYIwUnv9J0uMGV7FUTUI/fe1IoG49UbxUQ1Nl/tw+JT7GgEU0fxrosNiYoF5sCMdJIf5R4OpU5+rdvseDeMdzhOkouR/MRVpLxIWCvmjsivSW+xeckAJztbw7OUj7YLSedhhzxw4PFrOE2kMolosbkRE9vn/wXe05CNjInLbRWikwH2qVNs0l5bRrUtBg0/jnDPiI93XoBzH27y9uU9HW6T5xOkQzjUYZfEqomlb752edznR/Zugalsi7bd5GH5okAJ0LAdi1xbDoA3r amir@amir-G501JW
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+
+runcmd:
+ - echo "AllowUsers amir" >> /etc/ssh/sshd_config
+ - dhclient
+ - restart ssh
+
