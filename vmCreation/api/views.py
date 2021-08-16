@@ -7,6 +7,7 @@ from random import randrange
 import subprocess
 from subprocess import PIPE
 from vmCreation.updateStates import updateServers
+import random
 
 class Create(APIView):
     def post(self, request, format= None):
@@ -19,16 +20,24 @@ class Create(APIView):
             ids.append(host.id)
         if serializer.is_valid():
             r = randrange(2)
-            ip = virtips[r]
+            hip = virtips[r]
             host = ids[r]
             serializer.save()
-            result = subprocess.run(['ssh',ip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage']],stdout=PIPE, stderr=PIPE)
+            ips = Server.objects.values('ip').distinct()
+            found = False
+            while not found:
+                oct = random.randint(2, 254)
+                ip = "192.168.123." + str(oct)
+                if ip not in ips:
+                    found = True
+            result = subprocess.run(['ssh',hip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage'],ip],stdout=PIPE, stderr=PIPE)
             s = Server.objects.filter(name = request.data['name']).first()
             h = Host.objects.filter(id = host).first()
             s.status = "Active"
             s.host = h
+            s.ip = ip
             s.save()
-            return Response(result.stdout.decode(), status=status.HTTP_200_OK)
+            return Response(ip, status=status.HTTP_200_OK)
         elif isRepeating(request.data):
             servers = Server.objects
             hosts = Host.objects.all()
