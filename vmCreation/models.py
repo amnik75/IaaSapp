@@ -16,5 +16,7 @@ class Server(models.Model):
     cpu = models.CharField(max_length = 2,blank=True, null=True)
     storage = models.CharField(max_length = 5,blank=True, null=True)
     status = models.CharField(max_length = 254,blank=True, null=True,default='pending_create')
+    ip = models.CharField(max_length = 15,blank=True, null=True,unique=True)
     host = models.ForeignKey(Host,on_delete=models.CASCADE,null = True,blank=True)
+
 

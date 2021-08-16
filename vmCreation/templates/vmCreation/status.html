@@ -36,6 +36,7 @@ th, td {
     <th>Cpu (core)</th>
     <th>Storage (Giagabytes)</th>
     <th>Status</th>
+    <th>Ip</th>
     <th>Host (id)</th>
   </tr>
     {% for server in servers %}
@@ -45,6 +46,7 @@ th, td {
     <td>{{ server.cpu }}</td>
     <td>{{ server.storage }}</td>
     <td>{{ server.status }}</td>
+    <td>{{ server.ip }}</td>
     <td>{% if None == server.host.id %}
     	Not defined
 	{% else %}
