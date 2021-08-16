@@ -30,12 +30,14 @@ class Create(APIView):
                 ip = "192.168.123." + str(oct)
                 if ip not in ips:
                     found = True
-            result = subprocess.run(['ssh',hip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage'],ip],stdout=PIPE, stderr=PIPE)
+            mac = "52:54:00:%02x:%02x:%02x" % (random.randint(0, 255),random.randint(0, 255),random.randint(0, 255))
+            result = subprocess.run(['ssh',hip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage'],ip,mac],stdout=PIPE, stderr=PIPE)
             s = Server.objects.filter(name = request.data['name']).first()
             h = Host.objects.filter(id = host).first()
             s.status = "Active"
             s.host = h
             s.ip = ip
+            s.mac = mac
             s.save()
             return Response(ip, status=status.HTTP_200_OK)
         elif isRepeating(request.data):
@@ -53,13 +55,13 @@ class Create(APIView):
                 server.status = "pending_create"
                 server.host = None
                 server.save()
-                result = subprocess.run(['ssh',ip,'sudo','./vmCreate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],request.data['storage']],stdout=PIPE, stderr=PIPE)
+                result = subprocess.run(['ssh',ip,'sudo','./vmEvacuate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],mac],stdout=PIPE, stderr=PIPE)
                 s = Server.objects.filter(name = request.data['name']).first()
                 h = Host.objects.filter(id = host).first()
                 s.status = "Active"
                 s.host = h
                 s.save()
-                return Response(result.stdout.decode(), status=status.HTTP_200_OK)
+                return Response("Server created on new host successfully!", status=status.HTTP_200_OK)
             else:
                 return Response("The name is used by an other customer", status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_200_OK)
