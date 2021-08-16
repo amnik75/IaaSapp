@@ -55,7 +55,7 @@ class Create(APIView):
                 server.status = "pending_create"
                 server.host = None
                 server.save()
-                result = subprocess.run(['ssh',ip,'sudo','./vmEvacuate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],mac],stdout=PIPE, stderr=PIPE)
+                result = subprocess.run(['ssh',ip,'sudo','./vmEvacuate.sh',request.data['name'],str(int(request.data['ram']) * 1024),request.data['cpu'],server.mac],stdout=PIPE, stderr=PIPE)
                 s = Server.objects.filter(name = request.data['name']).first()
                 h = Host.objects.filter(id = host).first()
                 s.status = "Active"
