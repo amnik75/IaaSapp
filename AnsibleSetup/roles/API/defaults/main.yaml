@@ -1,0 +1,4 @@
+django_version: "3.2.6"
+source_path_django_app: "/home/amir/iaasapp/API/"
+destination_path_deployment_django_app: "/home/amir/iaasapp"
+ip_network_vms: "192.168.123."

@@ -2,9 +2,8 @@
 
 - name: install kvm virtualization packages
   apt:
-      name: "{{ item }}"
+      name: "{{ virtualization_packages }}"
       state: latest
       update_cache: yes
-  with_items: "{{ virtualization_packages }}"
   when: ansible_os_family == "Debian"
   notify: start virtualiztion

@@ -4,3 +4,8 @@
   become: yes
   roles:
    - virtServer
+
+- hosts: apiServer
+  become: yes
+  roles:
+   - API

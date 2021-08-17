@@ -1,0 +1,28 @@
+---
+
+- name: install required packages
+  apt:
+      name: 
+        - python3-pip
+        - python3-libvirt
+      state: latest
+      update_cache: yes
+  when: ansible_os_family == "Debian"
+- name: install django packages
+  pip:
+      name: 
+        - django=={{ django_version }}
+        - djangorestframework
+
+- name: deploy django iaas app
+  copy:
+    src: "{{ source_path_django_app }}"
+    dest: "{{ destination_path_deployment_django_app }}"
+- name: config django app with templates
+  template:
+    src: settings.py.j2
+    dest: "{{ destination_path_deployment_django_app }}/iaasapp/settings.py"
+- name: config django app with templates
+  template:
+    src: api_views.py.j2
+    dest: "{{ destination_path_deployment_django_app }}/vmCreation/api/views.py"
