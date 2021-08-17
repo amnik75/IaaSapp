@@ -1,0 +1,6 @@
+---
+
+- hosts: virtServers
+  become: yes
+  roles:
+   - virtServer

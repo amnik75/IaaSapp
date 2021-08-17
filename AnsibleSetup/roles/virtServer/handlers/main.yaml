@@ -1,0 +1,4 @@
+---
+
+- name: start virtualiztion
+  service: name=libvirtd enabled=yes state=started

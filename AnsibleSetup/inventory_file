@@ -1,0 +1,4 @@
+[virtServers]
+virt3 ansible_host=192.168.122.241
+virt4 ansible_host=192.168.122.195
+

@@ -1,0 +1,6 @@
+virtualization_packages:
+- qemu-kvm
+- libvirt-bin
+- bridge-utils
+- virtinst
+- cloud-image-utils
