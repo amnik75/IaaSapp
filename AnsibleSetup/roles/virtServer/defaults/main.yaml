@@ -4,3 +4,8 @@ virtualization_packages:
 - bridge-utils
 - virtinst
 - cloud-image-utils
+user_os: amir
+user_password: amir
+vmCreationScripts_dest_path: /home/amir/
+base_image_path: /home/amir/vms/base/
+vm_disk_path: /home/amir/vms/servers/

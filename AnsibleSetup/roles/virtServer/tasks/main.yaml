@@ -7,3 +7,15 @@
       update_cache: yes
   when: ansible_os_family == "Debian"
   notify: start virtualiztion
+
+- name: Ensures needed directories exist
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ vmCreationScripts_dest_path }}"
+    - "{{ vm_disk_path }}"
+- name: deploy vm scripts
+  template: src={{ item.src }} dest={{ item.dest }} mode='744'
+  with_items:
+    - { src: 'vmCreate.sh.j2', dest: '{{ vmCreationScripts_dest_path }}vmCreate.sh' }
+    - { src: 'vmEvacuate.sh.j2', dest: '{{ vmCreationScripts_dest_path }}vmEvacuate.sh' }
+    - { src: 'user-data.j2', dest: '{{ vm_disk_path }}user-data' }

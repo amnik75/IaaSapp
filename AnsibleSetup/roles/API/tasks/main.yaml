@@ -19,10 +19,8 @@
     src: "{{ source_path_django_app }}"
     dest: "{{ destination_path_deployment_django_app }}"
 - name: config django app with templates
-  template:
-    src: settings.py.j2
-    dest: "{{ destination_path_deployment_django_app }}/iaasapp/settings.py"
-- name: config django app with templates
-  template:
-    src: api_views.py.j2
-    dest: "{{ destination_path_deployment_django_app }}/vmCreation/api/views.py"
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'api_views.py.j2', dest: '{{ destination_path_deployment_django_app }}/vmCreation/api/views.py' }
+    - { src: 'settings.py.j2', dest: '{{ destination_path_deployment_django_app }}/iaasapp/settings.py' }
+
