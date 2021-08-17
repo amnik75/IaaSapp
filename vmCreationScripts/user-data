@@ -1,16 +1,16 @@
 #cloud-config
-hostname: test
+hostname: $HOSTNAME
 manage_etc_hosts: true
 users:
-  - name: amir
+  - name: $USER
     sudo: ALL=(ALL) NOPASSWD:ALL
     groups: users, admin
-    home: /home/amir
+    home: /home/$USER
     shell: /bin/bash
     lock_passwd: false
 ssh_pwauth: true
 disable_root: false
 chpasswd:
   list: |
-    amir:amir
+    $USER:$PASSWORD
   expire: false
