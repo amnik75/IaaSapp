@@ -8,6 +8,22 @@
   when: ansible_os_family == "Debian"
   notify: start virtualiztion
 
+- name: install nfs client
+  apt:
+      name: nfs-common
+      state: latest
+      update_cache: yes
+
+- name: mount nfs storage
+  mount:
+   fstype: nfs
+   opts: defaults
+   dump: "0"
+   passno: "0"
+   state: mounted
+   src: "{{ ip_storage }}:/nfsshare"
+   path: "{{ storage_mount_path }}"
+
 - name: Ensures needed directories exist
   file: path={{ item }} state=directory
   with_items:
