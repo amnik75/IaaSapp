@@ -11,5 +11,5 @@ ssh_pwauth: true
 disable_root: false
 chpasswd:
   list: |
-    $USER:{{ user_password }}
+    {{ user_os }}:{{ user_password }}
   expire: false

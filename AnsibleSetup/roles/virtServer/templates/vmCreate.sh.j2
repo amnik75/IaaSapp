@@ -1,6 +1,5 @@
 #!/bin/bash
 qemu-img create -F qcow2 -b {{ base_image_path }}focal-server-cloudimg-amd64.img -f qcow2 {{ vm_disk_path }}$1.qcow2 $4G &>  /dev/null
-MAC_ADDR=$(printf '52:54:00:%02x:%02x:%02x' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
 cat > {{ vm_disk_path }}network-config <<EOF
 ethernets:
     ens3:
@@ -9,13 +8,13 @@ ethernets:
         dhcp4: false
         gateway4: 192.168.123.1
         match:
-            macaddress: $MAC_ADDR
+            macaddress: $6
         nameservers:
             addresses:
             - 8.8.8.8
         set-name: ens3
 version: 2
 EOF
-echo "local-hostname: MyCloud" > meta-data
+echo "local-hostname: $1" > {{ vm_disk_path }}meta-data
 cloud-localds -v --network-config={{ vm_disk_path }}network-config {{ vm_disk_path }}$1-seed.qcow2 {{ vm_disk_path }}user-data {{ vm_disk_path }}meta-data &>  /dev/null
-virt-install --connect qemu:///system --virt-type kvm --name $1 --ram $2 --vcpus=$3 --os-type linux   --disk path={{ vm_disk_path }}$1.qcow2,device=disk --disk path={{ vm_disk_path }}$1-seed.qcow2,device=disk --import --network network=default,model=virtio,mac=$MAC_ADDR --noautoconsole &>  /dev/null
+virt-install --connect qemu:///system --virt-type kvm --name $1 --ram $2 --vcpus=$3 --os-type linux   --disk path={{ vm_disk_path }}$1.qcow2,device=disk --disk path={{ vm_disk_path }}$1-seed.qcow2,device=disk --import --network network=default,model=virtio,mac=$6 --noautoconsole &>  /dev/null

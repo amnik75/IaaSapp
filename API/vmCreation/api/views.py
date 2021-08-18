@@ -19,7 +19,7 @@ class Create(APIView):
             virtips.append(host.ip)
             ids.append(host.id)
         if serializer.is_valid():
-            r = randrange(2)
+            r = randrange(len(virtips))
             hip = virtips[r]
             host = ids[r]
             serializer.save()
