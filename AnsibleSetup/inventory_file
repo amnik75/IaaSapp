@@ -5,10 +5,6 @@ virt4 ansible_host=192.168.122.195
 [apiServer]
 api ansible_host=192.168.122.115
 
-
-
-
-
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 

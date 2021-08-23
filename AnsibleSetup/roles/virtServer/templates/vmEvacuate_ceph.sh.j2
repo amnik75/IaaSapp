@@ -1,0 +1,3 @@
+#!/bin/bash
+
+virt-install --connect qemu:///system --virt-type kvm --name $1 --ram $2 --vcpus=$3 --os-type linux   --disk vol={{ vms_pool }}/$1,bus=virtio --disk path={{ cloud_init_path }}$1-seed.qcow2,device=disk --import --network network=default,model=virtio,mac=$4 --noautoconsole

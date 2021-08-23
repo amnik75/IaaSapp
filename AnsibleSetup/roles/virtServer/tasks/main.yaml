@@ -13,6 +13,7 @@
       name: nfs-common
       state: latest
       update_cache: yes
+  when: ceph_back != true
 
 - name: mount nfs storage
   mount:
@@ -23,15 +24,39 @@
    state: mounted
    src: "{{ ip_storage }}:/nfsshare"
    path: "{{ storage_mount_path }}"
+  when: ceph_back != true
 
 - name: Ensures needed directories exist
   file: path={{ item }} state=directory
   with_items:
     - "{{ vmCreationScripts_dest_path }}"
     - "{{ vm_disk_path }}"
-- name: deploy vm scripts
+  when: ceph_back != true
+- name: deploy nfs vm scripts
   template: src={{ item.src }} dest={{ item.dest }} mode='755' owner={{ user_script }} group={{ user_script }}
   with_items:
     - { src: 'vmCreate.sh.j2', dest: '{{ vmCreationScripts_dest_path }}vmCreate.sh' }
     - { src: 'vmEvacuate.sh.j2', dest: '{{ vmCreationScripts_dest_path }}vmEvacuate.sh' }
     - { src: 'user-data.j2', dest: '{{ vm_disk_path }}user-data' }
+  when: ceph_back != true
+
+- name: install ceph-common
+  apt:
+      name: ceph-common
+      state: latest
+      update_cache: yes
+  when: ceph_back == true
+- name: Ensures needed directories exist
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ vmCreationScripts_dest_path }}"
+    - "{{  cloud_init_path }}"
+  when: ceph_back == true
+- name: deploy ceph vm scripts
+  template: src={{ item.src }} dest={{ item.dest }} mode='755' owner={{ user_script }} group={{ user_script }}
+  with_items:
+    - { src: 'vmCreate_ceph.sh.j2', dest: '{{ vmCreationScripts_dest_path }}vmCreate.sh' }
+    - { src: 'vmEvacuate_ceph.sh.j2', dest: '{{ vmCreationScripts_dest_path }}vmEvacuate.sh' }
+    - { src: 'user-data.j2', dest: '{{ cloud_init_path }}user-data' }
+  when: ceph_back == true
+
