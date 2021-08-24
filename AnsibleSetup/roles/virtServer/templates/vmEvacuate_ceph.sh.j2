@@ -1,3 +1,20 @@
 #!/bin/bash
-
+virsh pool-refresh {{ vms_pool }}
+cat > {{ cloud_init_path }}network-config <<EOF
+ethernets:
+    ens3:
+        addresses:
+        - $5/24
+        dhcp4: false
+        gateway4: 192.168.123.1
+        match:
+            macaddress: $4
+        nameservers:
+            addresses:
+            - 8.8.8.8
+        set-name: ens3
+version: 2
+EOF
+echo "local-hostname: $1" > {{ cloud_init_path }}meta-data
+cloud-localds -v --network-config={{ cloud_init_path }}network-config {{ cloud_init_path }}$1-seed.qcow2 {{ cloud_init_path }}user-data {{ cloud_init_path }}meta-data
 virt-install --connect qemu:///system --virt-type kvm --name $1 --ram $2 --vcpus=$3 --os-type linux   --disk vol={{ vms_pool }}/$1,bus=virtio --disk path={{ cloud_init_path }}$1-seed.qcow2,device=disk --import --network network=default,model=virtio,mac=$4 --noautoconsole
